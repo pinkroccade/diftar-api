@@ -25,6 +25,7 @@ Bron: mededelingen van Jarich Ypma, 2026-11-09. Alles hieronder komt van die med
 | Identity provider | Keycloak (gangbaar), liefst lokaal in een container, omdat dat het meest op de eigen setup lijkt. |
 | Realms | Een realm per tenant. |
 | OAuth-profiel | NL GOV OAuth-profiel, client credentials flow. |
+| Clientauthenticatie | `private_key_jwt`. |
 | OAS3-validatie | Zit in de pipeline van de spec, niet in de mock. |
 | Aanvullende tools | Voorstel voor een lightweight open-sourcetool, alleen als nodig. |
 | Beheer van de standaard | Jarich Ypma. |
@@ -37,7 +38,7 @@ Het belangrijkste is dat ontwikkelaars de **client credentials flow kunnen teste
 
 - **Geen eigen tokenuitgifte in de mock.** De modus `builtin` uit kaart #6 is maatwerk en vervalt tenzij Jarich Ypma er expliciet mee akkoord gaat. Blijft over: `none` en `keycloak`.
 - **Geen JWT/scope-validatie in de mock als uitgangspunt.** Dat verkleint het gat dat [issue #8](https://github.com/pinkroccade/diftar-api/issues/8) vond. Of de resterende eisen (problem+json, adres-óf-BAG-regel, CSV/faker-datasets, hot-reload) met standaard WireMock-functies kunnen, moet nog blijken in [issue #23](https://github.com/pinkroccade/diftar-api/issues/23).
-- **Keycloak-voorbeeldinrichting** met een realm per tenant en een client-credentials-client volgens het NL GOV-profiel. Welke clientauthenticatie het profiel voorschrijft (bijvoorbeeld `private_key_jwt` of mTLS) en wat Keycloak daarvan standaard ondersteunt, is nog te toetsen.
+- **Keycloak-voorbeeldinrichting** met een realm per tenant en een client-credentials-client volgens het NL GOV-profiel. Clientauthenticatie is **`private_key_jwt`**. Of en hoe Keycloak dat standaard ondersteunt (client-authenticator "Signed JWT", JWKS-URL per client) is nog te toetsen en inrichten in [issue #16](https://github.com/pinkroccade/diftar-api/issues/16).
 
 ## Nog niet vastgesteld
 

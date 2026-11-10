@@ -1,0 +1,76 @@
+{
+  "realm": "gemeente-a",
+  "enabled": true,
+  "sslRequired": "none",
+  "accessTokenLifespan": 300,
+  "clientScopes": [
+    {
+      "name": "diftar.ledigingen.lezen",
+      "protocol": "openid-connect",
+      "attributes": { "include.in.token.scope": "true", "display.on.consent.screen": "false" },
+      "protocolMappers": [
+        {
+          "name": "audience-diftar",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": { "included.custom.audience": "diftar-api", "access.token.claim": "true", "id.token.claim": "false" }
+        }
+      ]
+    },
+    {
+      "name": "diftar.stortingen.lezen",
+      "protocol": "openid-connect",
+      "attributes": { "include.in.token.scope": "true", "display.on.consent.screen": "false" },
+      "protocolMappers": [
+        {
+          "name": "audience-diftar",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": { "included.custom.audience": "diftar-api", "access.token.claim": "true", "id.token.claim": "false" }
+        }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "nlportal",
+      "name": "NL-Portal (beide scopes)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "fullScopeAllowed": false,
+      "clientAuthenticatorType": "client-jwt",
+      "attributes": {
+        "use.jwks.string": "true",
+        "jwks.string": "__JWKS__",
+        "token.endpoint.auth.signing.alg": "RS256"
+      },
+      "defaultClientScopes": [],
+      "optionalClientScopes": ["diftar.ledigingen.lezen", "diftar.stortingen.lezen"]
+    },
+    {
+      "clientId": "nlportal-alleen-ledigingen",
+      "name": "Client met alleen de scope voor ledigingen",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "fullScopeAllowed": false,
+      "clientAuthenticatorType": "client-jwt",
+      "attributes": {
+        "use.jwks.string": "true",
+        "jwks.string": "__JWKS__",
+        "token.endpoint.auth.signing.alg": "RS256"
+      },
+      "defaultClientScopes": [],
+      "optionalClientScopes": ["diftar.ledigingen.lezen"]
+    }
+  ]
+}

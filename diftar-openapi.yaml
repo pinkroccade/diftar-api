@@ -36,8 +36,6 @@ tags:
     description: Registraties van het legen van minicontainers
   - name: Stortingen
     description: Registraties van stortingen in verzamelcontainers
-  - name: OAuth
-    description: OAuth2 Client Credentials tokenuitgifte
   - name: Specificatie
     description: Machineleesbare API-specificatie
 
@@ -176,66 +174,6 @@ paths:
           $ref: "#/components/responses/GeenToegang"
         "404":
           $ref: "#/components/responses/AdresNietGevonden"
-
-  /oauth/token:
-    post:
-      summary: OAuth2 client credentials token
-      description: |
-        Geeft een opaque Bearer access token uit voor geldige client credentials
-        (form body of HTTP Basic), conform RFC 6749 client_credentials.
-      operationId: postOauthToken
-      tags:
-        - OAuth
-      security: [ ]
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              required:
-                - grant_type
-                - client_id
-                - client_secret
-              properties:
-                grant_type:
-                  type: string
-                  enum:
-                    - client_credentials
-                client_id:
-                  type: string
-                client_secret:
-                  type: string
-      responses:
-        "200":
-          description: Access token issued
-          headers:
-            API-Version:
-              $ref: "#/components/headers/ApiVersie"
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - access_token
-                  - token_type
-                  - expires_in
-                properties:
-                  access_token:
-                    type: string
-                  token_type:
-                    type: string
-                    example: Bearer
-                  expires_in:
-                    type: integer
-                    example: 3600
-                  scope:
-                    type: string
-                    example: diftar.ledigingen.lezen diftar.stortingen.lezen
-        "400":
-          description: Invalid grant_type
-        "401":
-          description: Invalid client credentials
 
 components:
   parameters:
@@ -519,6 +457,9 @@ components:
 
     NietGeautoriseerd:
       description: Ontbrekend of ongeldig access token
+      headers:
+        WWW-Authenticate:
+          $ref: "#/components/headers/WwwAuthenticate"
       content:
         application/problem+json:
           schema:
@@ -526,6 +467,9 @@ components:
 
     GeenToegang:
       description: Access token heeft onvoldoende scope voor deze operatie
+      headers:
+        WWW-Authenticate:
+          $ref: "#/components/headers/WwwAuthenticate"
       content:
         application/problem+json:
           schema:
@@ -546,6 +490,13 @@ components:
             $ref: "#/components/schemas/Probleem"
 
   headers:
+    WwwAuthenticate:
+      description: |
+        Authenticatie-uitdaging conform RFC 6750, bijvoorbeeld `Bearer` of
+        `Bearer error="insufficient_scope"`.
+      schema:
+        type: string
+        example: Bearer
     ApiVersie:
       description: Volledige versienummer van deze API (conform NL API Design Rules, core/version-header).
       schema:
@@ -556,13 +507,28 @@ components:
     OAuth2ClientCredentials:
       type: oauth2
       description: |
-        OAuth2 Client Credentials flow conform het Logius "Direct Access Client"-
-        profiel (zie `docs/adr/0001-client-credentials-security.md`). De
-        aanroepende partij (portal-backend) is zelf verantwoordelijk voor het
+        OAuth2 Client Credentials conform het NL GOV Assurance profile for
+        OAuth 2.0 v1.1.0 (Direct Access Client); zie
+        `docs/adr/0002-security-conform-nl-gov-oauth-profiel.md`.
+
+        - De client authenticeert zich bij de autorisatieserver uitsluitend met
+          `private_key_jwt`. De publieke sleutel is vooraf geregistreerd (bij
+          voorkeur via `jwks_uri`); `client_secret` is geen onderdeel van het
+          contract.
+        - Het access token is een ondertekende JWT met minimaal `iss`, `azp`,
+          `exp`, `aud` en `scope`, en een `kid`-header. De `aud` is de vaste
+          identifier van deze API.
+        - Het tokenendpoint is geen onderdeel van deze API. Het staat bij de
+          vertrouwde issuer (TODO: issuer- en discovery-URL, bijv.
+          `https://TODO-autorisatieserver.example.nl/.well-known/oauth-authorization-server`).
+        - Deze API controleert handtekening, `iss`, `aud`, `exp` en de scope; bij
+          een ontbrekende scope volgt `403`.
+
+        De aanroepende partij (portal-backend) is zelf verantwoordelijk voor het
         afdwingen dat een burger alleen zijn eigen gegevens opvraagt.
       flows:
         clientCredentials:
-          tokenUrl: oauth/token
+          tokenUrl: https://TODO-autorisatieserver.example.nl/oauth/token
           scopes:
             diftar.ledigingen.lezen: Leesrechten op ledigingen
             diftar.stortingen.lezen: Leesrechten op stortingen

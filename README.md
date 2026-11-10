@@ -13,6 +13,18 @@ gegenereerd met Redoc, automatisch bijgewerkt bij elke wijziging aan
 - [`GLOSSARY.md`](GLOSSARY.md) — domeinbegrippen.
 - [`STANDARDS.md`](STANDARDS.md) — welke standaarden zijn gebruikt en hoe getoetst.
 - [`docs/adr/`](docs/adr/) — architectuurbeslissingen (ADR's).
+- [`mock/`](mock/README.md) — mock van de API om tegen te ontwikkelen en te testen (zie [Mock](#mock)).
+
+## Mock
+
+Wil je een client of implementatie bouwen tegen deze API? Start de mock:
+
+```bash
+docker compose -f mock/compose.yaml up --build
+curl "localhost:1080/v1/ledigingen?postcode=1234AB&huisnummer=12&vanaf=2026-01-01&totEnMet=2026-12-31&pageSize=2"
+```
+
+De mock volgt de spec, kent vaste scenario-adressen (paginering, lege lijst, fouten, periodegrenzen), een dataset die je zelf kunt aanpassen en een Keycloak-voorbeeldinrichting. Alles staat beschreven in [`mock/README.md`](mock/README.md); de scenario's in [`mock/docs/scenarios.md`](mock/docs/scenarios.md).
 
 ## Doel en herkomst
 

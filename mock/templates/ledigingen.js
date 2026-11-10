@@ -1,0 +1,1 @@
+return pagina('ledigingen', 'totaalAantalLedigingen');

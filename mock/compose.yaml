@@ -1,0 +1,8 @@
+# Start de mock: docker compose -f mock/compose.yaml up --build
+services:
+  mock:
+    build:
+      context: ..
+      dockerfile: mock/Dockerfile
+    ports:
+      - "1080:1080"

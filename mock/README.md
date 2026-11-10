@@ -2,60 +2,53 @@
 
 Mock van de Diftar Ledigingen API, gebouwd op [MockServer](https://www.mock-server.com/) (gepind, `-graaljs`-image). De spec `diftar-openapi.yaml` is de enige bron: de expectations worden gegenereerd uit de spec, de templates in `mock/templates/` en de dataset in `mock/dataset/dataset.json`.
 
+## Waar vind je wat
+
+| Ik wil... | Lees |
+|---|---|
+| de mock starten en een eerste aanroep doen | [Snel starten](#snel-starten) hieronder |
+| mijn client testen op paginering, lege lijsten, fouten en periodegrenzen | [Scenario's](docs/scenarios.md) |
+| de dataset aanpassen, een instelling wijzigen of een probleem oplossen | [Configuratie en referentie](docs/configuratie.md) |
+| authenticatie met Keycloak proberen | [Authenticatiemodi](#authenticatiemodi) |
+| weten wat de mock niet doet | [Bekende afwijkingen](#bekende-afwijkingen-van-het-contract) |
+| weten hoe het image wordt gepubliceerd | [Image en publicatie](#image-en-publicatie) |
+
 ## Snel starten
+
+Vereist: Docker met Compose. Vanaf de root van deze repository:
 
 ```bash
 docker compose -f mock/compose.yaml up --build
 ```
 
-De mock luistert op `http://localhost:1080/v1`. In modus `none` (standaard) is geen token nodig. Zonder compose kan het ook: `docker build -f mock/Dockerfile -t diftar-mock .` en `docker run -p 1080:1080 diftar-mock` (dan is de dataset ingebakken en werkt hot-reload niet).
-
-## Voorbeelden
+De eerste keer bouwen duurt enkele minuten; daarna start de mock in enkele seconden. Test hem:
 
 ```bash
-# Veel ledigingen (paginering): totaal 52 in 2026
-curl "localhost:1080/v1/ledigingen?postcode=1234AB&huisnummer=12&vanaf=2026-01-01&totEnMet=2026-12-31&pageSize=20&page=2"
-
-# Zelfde adres via BAG-nummeraanduiding
-curl "localhost:1080/v1/ledigingen?nummeraanduidingIdentificatie=0518200000123456&vanaf=2026-01-01&totEnMet=2026-12-31"
-
-# Stortingen
-curl "localhost:1080/v1/stortingen?postcode=1234AB&huisnummer=16&vanaf=2026-01-01&totEnMet=2026-12-31"
-
-# Bekend adres zonder data: 200 met lege lijst
-curl "localhost:1080/v1/ledigingen?postcode=1234AB&huisnummer=14&vanaf=2026-01-01&totEnMet=2026-12-31"
-
-# Onbekend adres: 404 problem+json
-curl -i "localhost:1080/v1/ledigingen?postcode=9999ZZ&huisnummer=1&vanaf=2026-01-01&totEnMet=2026-12-31"
-
-# Ongeldige aanvraag: 400 problem+json
-curl -i "localhost:1080/v1/ledigingen?postcode=abc&huisnummer=12&vanaf=2026-01-01&totEnMet=2026-12-31"
-
-# De spec zelf
-curl localhost:1080/v1/openapi.json
+curl "localhost:1080/v1/ledigingen?postcode=1234AB&huisnummer=12&vanaf=2026-01-01&totEnMet=2026-12-31&pageSize=2"
 ```
+
+Je krijgt `200` met `"totaalAantalLedigingen":52` en twee ledigingen. De mock luistert op `http://localhost:1080/v1`; in modus `none` (standaard) is geen token nodig. De spec staat op `http://localhost:1080/v1/openapi.json`. Controleer in één keer of alles werkt met `sh mock/smoke-test.sh`.
+
+Zonder compose: `docker run -p 1080:1080 ghcr.io/pinkroccade/diftar-api/mock:latest` (zie [Image en publicatie](#image-en-publicatie)). Dan is de dataset ingebakken en werkt hot-reload niet.
 
 ## Scenario-adressen
 
+Een kleine vaste set adressen om de belangrijkste situaties van je client te testen. Per scenario staan het doel, een curl-voorbeeld en het verwachte clientgedrag in [Scenario's](docs/scenarios.md).
+
 | Label | Adres | BAG-nummeraanduiding | Gedrag |
 |---|---|---|---|
-| `veel-ledigingen` | 1234AB 12 | 0518200000123456 | 60 wekelijkse ledigingen vanaf 5 jan 2026 (52 in 2026), 3 stortingen. Gebruik `pageSize` en `page` om te pagineren. |
+| `veel-ledigingen` | 1234AB 12 | 0518200000123456 | 60 wekelijkse ledigingen vanaf 5 jan 2026 (52 in 2026), 3 stortingen: paginering. |
 | `bekend-maar-leeg` | 1234AB 14 | 0518200000123457 | Bekend, geen data: `200` met lege lijst. |
 | `alleen-stortingen` | 1234AB 16 | 0518200000123458 | Geen ledigingen, 8 stortingen. |
-| `huisletter-en-toevoeging` | 1234AB 18 A bis | 0518200000123459 | 4 ledigingen. Alleen vindbaar met `huisletter=A` en `huisnummertoevoeging=bis`; zonder die velden is het adres onbekend (`404`). |
-| `periodegrenzen` | 5678CD 1 | 0518200000123460 | Ledigingen op 31 mrt, 1 apr, 30 apr en 1 mei 2026, voor het testen van `vanaf` en `totEnMet` (beide inclusief, op datum). |
+| `huisletter-en-toevoeging` | 1234AB 18 A bis | 0518200000123459 | 4 ledigingen; zonder huisletter en toevoeging is het adres onbekend. |
+| `periodegrenzen` | 5678CD 1 | 0518200000123460 | Ledigingen op 31 mrt, 1 apr, 30 apr en 1 mei 2026: `vanaf` en `totEnMet` zijn inclusief. |
 | (onbekend) | elk ander adres | | `404` problem+json met het adres in `detail`. |
 
 Het `label` is een naam voor het scenario in de dataset, geen API-veld.
 
 ## Dataset aanpassen (hot-reload)
 
-Pas `mock/dataset/dataset.json` aan terwijl de compose draait. Binnen ongeveer 2 seconden is de mock bijgewerkt, zonder herstart.
-
-- Het bestand heeft een JSON-schema, `mock/dataset/dataset.schema.json`; editors als VS Code geven daarmee aanvulling en foutmeldingen (via `$schema` bovenin).
-- Een adres bestaat uit `postcode`, `huisnummer`, optioneel `huisletter` en `huisnummertoevoeging`, `nummeraanduidingIdentificatie` (16 cijfers) en de lijsten `ledigingen` en `stortingen`.
-- "Bekend" betekent: het adres of de BAG-nummeraanduiding staat in de dataset.
-- Is de dataset ongeldig (schema, ongeldige datum, dubbel adres), dan staat de fout in de logs van de generator (`docker compose -f mock/compose.yaml logs generator`) en blijft de vorige dataset actief.
+Pas `mock/dataset/dataset.json` aan terwijl de compose draait. Binnen ongeveer 2 seconden gebruikt de mock de nieuwe gegevens, zonder herstart. Een ongeldige dataset wordt gemeld in de logs van de generator (`docker compose -f mock/compose.yaml logs generator`) en laat de vorige dataset actief. Het veldoverzicht, een voorbeeld en de spelregels staan in [Configuratie en referentie](docs/configuratie.md#dataset).
 
 ## Authenticatiemodi
 

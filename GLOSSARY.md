@@ -20,3 +20,15 @@ De leverancier/backend-organisatie die de Diftar Ledigingen API technisch host e
 
 ## Diftar Ledigingen API
 De API in deze repository (voorheen "Pinkroccade MijnOmgeving API"). Levert ledigingen op, gefilterd op adres of BAG-nummeraanduiding-ID en een periode (`vanaf`/`totEnMet`).
+
+## Mock
+Nabootsing van de Diftar Ledigingen API in `mock/`, gegenereerd uit de spec, voor ontwikkel- en testdoeleinden. Nooit voor productie. Zie [`mock/README.md`](mock/README.md).
+
+## Dataset
+Het bestand `mock/dataset/dataset.json` met de adressen, ledigingen en stortingen die de mock teruggeeft. Een adres of BAG-nummeraanduiding is "bekend" als het in de dataset staat; anders geeft de mock `404`.
+
+## Scenario-adres
+Een vast adres in de dataset met een naam (`label`) dat één situatie van een client laat testen, bijvoorbeeld paginering of een bekend adres zonder ledigingen. Het label is een naam in de dataset en geen API-veld.
+
+## Modus
+De manier waarop de mock omgaat met authenticatie: `none` (geen token nodig) of `keycloak` (token verplicht aanwezig, via de Keycloak-voorbeeldinrichting; de mock controleert het token zelf niet).

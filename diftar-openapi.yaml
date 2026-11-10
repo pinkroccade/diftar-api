@@ -88,9 +88,8 @@ paths:
 
         Een bekend adres of bekende BAG-nummeraanduiding zonder ledigingen in de
         periode is een geldige vraag met een geldig antwoord: `200` met een lege
-        lijst. Een adres of BAG-nummeraanduiding dat niet gevonden wordt (ook
-        als de nummeraanduiding niet bij de gemeente van de aanroeper hoort)
-        geeft `404 Not Found` met Problem Details en een duidelijke `detail`.
+        lijst. Een adres of BAG-nummeraanduiding dat niet gevonden wordt geeft
+        `404 Not Found` met Problem Details en een duidelijke `detail`.
       operationId: getLedigingen
       tags:
         - Ledigingen
@@ -141,9 +140,8 @@ paths:
 
         Een bekend adres of bekende BAG-nummeraanduiding zonder stortingen in de
         periode is een geldige vraag met een geldig antwoord: `200` met een lege
-        lijst. Een adres of BAG-nummeraanduiding dat niet gevonden wordt (ook
-        als de nummeraanduiding niet bij de gemeente van de aanroeper hoort)
-        geeft `404 Not Found` met Problem Details en een duidelijke `detail`.
+        lijst. Een adres of BAG-nummeraanduiding dat niet gevonden wordt geeft
+        `404 Not Found` met Problem Details en een duidelijke `detail`.
       operationId: getStortingen
       tags:
         - Stortingen
@@ -541,11 +539,7 @@ components:
             $ref: "#/components/schemas/Probleem"
 
     AdresNietGevonden:
-      description: |
-        Het opgevraagde adres of de opgevraagde BAG-nummeraanduiding is niet
-        gevonden (of hoort niet bij de gemeente van de aanroeper). Dit is
-        iets anders dan een bekend adres zonder gegevens: dat geeft `200` met
-        een lege lijst.
+      description: Het opgevraagde adres of de opgevraagde BAG-nummeraanduiding is niet gevonden
       content:
         application/problem+json:
           schema:

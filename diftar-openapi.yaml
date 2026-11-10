@@ -14,7 +14,7 @@ info:
     "deze burger mag alleen zijn eigen adres zien" wordt bij de aanroepende
     portal-backend afgedwongen, niet hier. Zie `docs/adr/0001-client-credentials-security.md`
     voor de onderbouwing van deze keuze.
-  version: "1.0.1"
+  version: "1.1.0"
   contact:
     name: Beheerder Diftar Ledigingen API
     email: TODO-beheerder@example.nl
@@ -85,6 +85,11 @@ paths:
         met `huisletter`/`huisnummertoevoeging`), **of** `nummeraanduidingIdentificatie`
         op - niet beide, en niet geen van beide. Bij een ongeldige combinatie
         wordt een `400 Bad Request` met Problem Details teruggegeven.
+
+        Een bekend adres of bekende BAG-nummeraanduiding zonder ledigingen in de
+        periode is een geldige vraag met een geldig antwoord: `200` met een lege
+        lijst. Een adres of BAG-nummeraanduiding dat niet gevonden wordt geeft
+        `404 Not Found` met Problem Details en een duidelijke `detail`.
       operationId: getLedigingen
       tags:
         - Ledigingen
@@ -117,6 +122,8 @@ paths:
           $ref: "#/components/responses/NietGeautoriseerd"
         "403":
           $ref: "#/components/responses/GeenToegang"
+        "404":
+          $ref: "#/components/responses/AdresNietGevonden"
 
   /stortingen:
     get:
@@ -130,6 +137,11 @@ paths:
         met `huisletter`/`huisnummertoevoeging`), **of** `nummeraanduidingIdentificatie`
         op - niet beide, en niet geen van beide. Bij een ongeldige combinatie
         wordt een `400 Bad Request` met Problem Details teruggegeven.
+
+        Een bekend adres of bekende BAG-nummeraanduiding zonder stortingen in de
+        periode is een geldige vraag met een geldig antwoord: `200` met een lege
+        lijst. Een adres of BAG-nummeraanduiding dat niet gevonden wordt geeft
+        `404 Not Found` met Problem Details en een duidelijke `detail`.
       operationId: getStortingen
       tags:
         - Stortingen
@@ -162,6 +174,8 @@ paths:
           $ref: "#/components/responses/NietGeautoriseerd"
         "403":
           $ref: "#/components/responses/GeenToegang"
+        "404":
+          $ref: "#/components/responses/AdresNietGevonden"
 
   /oauth/token:
     post:
@@ -519,6 +533,13 @@ components:
 
     NietGevonden:
       description: Opgevraagde resource bestaat niet
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Probleem"
+
+    AdresNietGevonden:
+      description: Het opgevraagde adres of de opgevraagde BAG-nummeraanduiding is niet gevonden
       content:
         application/problem+json:
           schema:

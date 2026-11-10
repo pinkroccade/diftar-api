@@ -1,0 +1,31 @@
+# Mock met Keycloak als autorisatieserver (modus keycloak):
+#   docker compose -f mock/compose.yaml -f mock/compose.keycloak.yaml up --build
+# Keycloak: http://localhost:8080 (admin / admin, alleen voor lokaal gebruik), realm gemeente-a.
+services:
+  keycloak-init:
+    image: node:22-alpine
+    working_dir: /keycloak
+    command: ["node", "init.mjs", "/keycloak/keys", "/keycloak/realm.template.json", "/realms"]
+    volumes:
+      - ./keycloak:/keycloak
+      - realms:/realms
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.8.2
+    command: ["start-dev", "--import-realm", "--hostname=http://localhost:8080", "--health-enabled=true"]
+    depends_on:
+      keycloak-init:
+        condition: service_completed_successfully
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    volumes:
+      - realms:/opt/keycloak/data/import:ro
+    mem_limit: 1g
+    ports:
+      - "8080:8080"
+      - "9000:9000"
+  mock:
+    environment:
+      MOCKSERVER_INITIALIZATION_JSON_PATH: /generated/expectations-keycloak.json
+volumes:
+  realms:

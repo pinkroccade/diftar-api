@@ -59,14 +59,49 @@ Pas `mock/dataset/dataset.json` aan terwijl de compose draait. Binnen ongeveer 2
 
 ## Authenticatiemodi
 
-| Modus | Instelling | Gedrag |
+| Modus | Starten | Gedrag |
 |---|---|---|
-| `none` (standaard) | `MOCKSERVER_INITIALIZATION_JSON_PATH=/generated/expectations-none.json` (compose) of `/config/expectations-none.json` (image) | Geen token nodig. |
-| `keycloak` | `.../expectations-keycloak.json` | Zonder `Authorization`-header: `401` problem+json met `WWW-Authenticate: Bearer`. Het token zelf wordt niet gecontroleerd. De Keycloak-voorbeeldinrichting volgt in een eigen stap. |
+| `none` (standaard) | `docker compose -f mock/compose.yaml up --build` | Geen token nodig. |
+| `keycloak` | `docker compose -f mock/compose.yaml -f mock/compose.keycloak.yaml up --build` | Zonder `Authorization`-header: `401` problem+json met `WWW-Authenticate: Bearer`. Het token zelf wordt niet gecontroleerd (zie afwijkingen). |
+
+Zonder compose kies je de modus met `MOCKSERVER_INITIALIZATION_JSON_PATH` (`/config/expectations-none.json` of `/config/expectations-keycloak.json`).
+
+### Met Keycloak: token aanvragen en de mock aanroepen
+
+Keycloak 26.8.2 draait op http://localhost:8080 (beheer: `admin` / `admin`, alleen lokaal). De realm `gemeente-a` wordt bij het starten geïmporteerd; het starten duurt ongeveer 25 seconden. Het sleutelpaar voor `private_key_jwt` wordt bij de eerste start aangemaakt in `mock/keycloak/keys/` (staat in `.gitignore`; de privésleutel komt nooit in een realm-bestand).
+
+| Client | Scopes (alleen op verzoek, via `scope=`) |
+|---|---|
+| `nlportal` | `diftar.ledigingen.lezen`, `diftar.stortingen.lezen` |
+| `nlportal-alleen-ledigingen` | `diftar.ledigingen.lezen` |
+
+Clientauthenticatie is `private_key_jwt`, conform het NL GOV OAuth-profiel en [ADR 0002](../docs/adr/0002-security-conform-nl-gov-oauth-profiel.md). Er is geen client secret.
+
+```bash
+ISSUER=http://localhost:8080/realms/gemeente-a
+ASSERTION=$(node mock/keycloak/assertion.mjs nlportal $ISSUER)
+
+curl -s -X POST $ISSUER/protocol/openid-connect/token \
+  -d grant_type=client_credentials \
+  -d client_id=nlportal \
+  -d client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer \
+  --data-urlencode "client_assertion=$ASSERTION" \
+  -d "scope=diftar.ledigingen.lezen"
+# antwoord: {"access_token":"eyJ...","expires_in":300,"scope":"diftar.ledigingen.lezen",...}
+
+curl -H "Authorization: Bearer <access_token>" \
+  "localhost:1080/v1/ledigingen?postcode=1234AB&huisnummer=12&vanaf=2026-01-01&totEnMet=2026-12-31"
+```
+
+Let op:
+- Een assertion is eenmalig bruikbaar (`jti`) en 60 seconden geldig: maak per aanvraag een nieuwe. `Token reuse detected` betekent hergebruik.
+- Een scope die niet bij de client hoort geeft `invalid_scope`. Zonder `scope`-parameter krijg je een token zonder scope en zonder `aud`.
+- Het token heeft `aud` = `diftar-api` en `iss` = de realm-URL. Het tokenendpoint van Keycloak wijkt af van het `tokenUrl`-placeholder in de spec; in een echte omgeving geeft de beheerder het juiste endpoint.
+- Het realm-bestand wordt alleen geïmporteerd als de realm nog niet bestaat; `docker compose ... down -v` begint schoon.
 
 ## Bekende afwijkingen van het contract
 
-- Geen tokencontrole: geen `401` bij een ongeldig token en geen `403` bij een ontbrekende scope.
+- Geen tokencontrole: de mock controleert alleen of er een `Authorization`-header is. Geen `401` bij een ongeldig of verlopen token en geen `403` bij een ontbrekende scope; een token van Keycloak en het woord `onzin` geven hetzelfde antwoord.
 - Geen aparte combinatievalidatie: "adres óf BAG-nummeraanduiding, niet beide en niet geen" wordt niet afgedwongen.
 - Elke ongeldige aanvraag geeft een `400` met een generieke `detail`.
 - Hot-reload geldt alleen voor de dataset, niet voor de templates; die zijn in het image ingebakken.

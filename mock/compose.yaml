@@ -1,8 +1,30 @@
-# Start de mock: docker compose -f mock/compose.yaml up --build
+# Start de mock met hot-reload van de dataset:
+#   docker compose -f mock/compose.yaml up --build
+# Pas mock/dataset/dataset.json aan; binnen enkele seconden is de mock bijgewerkt.
+# Een ongeldige dataset wordt gemeld in de logs van 'generator'; de vorige dataset blijft actief.
 services:
+  generator:
+    build:
+      context: ..
+      dockerfile: mock/Dockerfile
+      target: generator
+    volumes:
+      - ./dataset:/dataset:ro
+      - generated:/generated
   mock:
     build:
       context: ..
       dockerfile: mock/Dockerfile
+    depends_on:
+      - generator
+    environment:
+      # Modus keycloak: /generated/expectations-keycloak.json
+      MOCKSERVER_INITIALIZATION_JSON_PATH: /generated/expectations-none.json
+      MOCKSERVER_WATCH_INITIALIZATION_JSON: "true"
+      MOCKSERVER_WATCH_INITIALIZATION_JSON_POLL_PERIOD_MILLIS: "1000"
+    volumes:
+      - generated:/generated:ro
     ports:
       - "1080:1080"
+volumes:
+  generated:

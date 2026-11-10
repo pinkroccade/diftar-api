@@ -70,3 +70,20 @@ Pas `mock/dataset/dataset.json` aan terwijl de compose draait. Binnen ongeveer 2
 - Geen aparte combinatievalidatie: "adres óf BAG-nummeraanduiding, niet beide en niet geen" wordt niet afgedwongen.
 - Elke ongeldige aanvraag geeft een `400` met een generieke `detail`.
 - Hot-reload geldt alleen voor de dataset, niet voor de templates; die zijn in het image ingebakken.
+
+## Image en publicatie
+
+De workflow `.github/workflows/mock-image.yml` bouwt het image bij elke PR die de mock of de spec raakt en laat de rooktest (`mock/smoke-test.sh`) draaien in beide modi. Bij een push naar `main` wordt het image gepubliceerd naar GHCR:
+
+```bash
+docker run -p 1080:1080 ghcr.io/pinkroccade/diftar-api/mock:latest
+```
+
+| Tag | Betekenis |
+|---|---|
+| `1.1.0` | volledige API-versie uit de spec (schuift mee bij een nieuwe mockbouw voor dezelfde API-versie) |
+| `1.1` | major.minor van de API-versie |
+| `latest` | laatste bouw van `main` |
+| `sha-<commit>` | onveranderlijk; gebruik deze om een exacte bouw vast te zetten |
+
+Het image is gebouwd op alpine met een verkleinde Java-runtime (ongeveer 490 MB, tegenover ongeveer 680 MB voor het officiële `-graaljs`-image) en draait als gebruiker zonder rechten. De modus kies je met `MOCKSERVER_INITIALIZATION_JSON_PATH`, zie [Authenticatiemodi](#authenticatiemodi).

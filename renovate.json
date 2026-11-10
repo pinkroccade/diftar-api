@@ -3,7 +3,7 @@
   "extends": ["config:recommended"],
   "timezone": "Europe/Amsterdam",
   "schedule": ["before 6am on monday"],
-  "enabledManagers": ["mise", "github-actions", "custom.regex"],
+  "enabledManagers": ["mise", "github-actions", "dockerfile", "docker-compose", "custom.regex"],
   "customManagers": [
     {
       "customType": "regex",

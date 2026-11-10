@@ -1,0 +1,135 @@
+name: Mock-image
+
+# Bouwt en toetst het mock-image bij elke PR en publiceert het naar GHCR bij een push naar main.
+# Geen `paths`-filter op de trigger: een verplichte check blijft anders hangen op PR's die de mock niet raken.
+# De workflow bepaalt zelf of de mock is gewijzigd en slaat anders de zware stappen over (de job slaagt dan).
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mock-image-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  image:
+    name: Bouw, toets en publiceer het mock-image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Bepaal of de mock is gewijzigd
+        id: wijziging
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          VOOR_SHA: ${{ github.event.before }}
+        run: |
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            echo "gewijzigd=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          if [ "$EVENT" = "pull_request" ]; then
+            BASIS="$BASE_SHA"
+          else
+            BASIS="$VOOR_SHA"
+          fi
+          # Bij een nieuwe branch of een ontbrekende basis: veilig uitgaan van gewijzigd.
+          if [ -z "$BASIS" ] || echo "$BASIS" | grep -qE '^0+$' || ! git cat-file -e "$BASIS^{commit}" 2>/dev/null; then
+            echo "gewijzigd=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          if git diff --name-only "$BASIS" HEAD | grep -qE '^(mock/|diftar-openapi\.yaml$|\.github/workflows/mock-image\.yml$)'; then
+            echo "gewijzigd=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "gewijzigd=false" >> "$GITHUB_OUTPUT"
+            echo "De mock is niet gewijzigd: bouwen en publiceren worden overgeslagen." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Lees de API-versie uit de spec
+        id: versie
+        if: steps.wijziging.outputs.gewijzigd == 'true'
+        run: |
+          VERSIE=$(sed -n 's/^  version: "\(.*\)"$/\1/p' diftar-openapi.yaml | head -1)
+          [ -n "$VERSIE" ] || { echo "Geen versie gevonden in diftar-openapi.yaml"; exit 1; }
+          echo "api=$VERSIE" >> "$GITHUB_OUTPUT"
+          echo "minor=${VERSIE%.*}" >> "$GITHUB_OUTPUT"
+
+      - name: Installeer Buildx
+        if: steps.wijziging.outputs.gewijzigd == 'true'
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Bouw het image
+        if: steps.wijziging.outputs.gewijzigd == 'true'
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: mock/Dockerfile
+          load: true
+          tags: diftar-mock:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Rooktest, modus none
+        if: steps.wijziging.outputs.gewijzigd == 'true'
+        run: |
+          docker run -d --name mock-none -p 1080:1080 diftar-mock:ci
+          for _ in $(seq 1 60); do curl -sf -o /dev/null http://localhost:1080/v1/openapi.json && break; sleep 1; done
+          sh mock/smoke-test.sh http://localhost:1080 none
+          docker rm -f mock-none
+
+      - name: Rooktest, modus keycloak
+        if: steps.wijziging.outputs.gewijzigd == 'true'
+        run: |
+          docker run -d --name mock-keycloak -p 1081:1080 -e MOCKSERVER_INITIALIZATION_JSON_PATH=/config/expectations-keycloak.json diftar-mock:ci
+          for _ in $(seq 1 60); do curl -sf -o /dev/null http://localhost:1081/v1/openapi.json && break; sleep 1; done
+          sh mock/smoke-test.sh http://localhost:1081 keycloak
+          docker rm -f mock-keycloak
+
+      - name: Controleer de compose-bestanden
+        if: steps.wijziging.outputs.gewijzigd == 'true'
+        run: |
+          docker compose -f mock/compose.yaml config -q
+          if [ -f mock/compose.keycloak.yaml ]; then docker compose -f mock/compose.yaml -f mock/compose.keycloak.yaml config -q; fi
+
+      - name: Log in bij GHCR
+        if: steps.wijziging.outputs.gewijzigd == 'true' && github.event_name != 'pull_request'
+        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bepaal tags en labels
+        id: meta
+        if: steps.wijziging.outputs.gewijzigd == 'true' && github.event_name != 'pull_request'
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: ghcr.io/${{ github.repository }}/mock
+          # API-versie volgt de spec; sha-tag is onveranderlijk, de versietags en latest schuiven mee.
+          tags: |
+            type=raw,value=${{ steps.versie.outputs.api }}
+            type=raw,value=${{ steps.versie.outputs.minor }}
+            type=raw,value=latest
+            type=sha,format=short
+
+      - name: Publiceer het image
+        if: steps.wijziging.outputs.gewijzigd == 'true' && github.event_name != 'pull_request'
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: mock/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha

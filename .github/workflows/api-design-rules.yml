@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Installeer tools uit mise.toml
-        uses: jdx/mise-action@v5
+        uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5
 
       - name: Valideer met DON Checker (ADR-versie uit mise.toml)
         run: mise run validate-nl-api-design-rules

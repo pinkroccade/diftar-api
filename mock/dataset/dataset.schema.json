@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Dataset van de Diftar Ledigingen mock",
+  "description": "Adressen met hun ledigingen en stortingen. 'label' is een naam voor het testscenario en geen API-veld. Een adres dat hier niet in staat geeft 404; een adres zonder ledigingen en stortingen geeft 200 met een lege lijst.",
+  "type": "object",
+  "required": ["adressen"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "adressen": { "type": "array", "items": { "$ref": "#/definitions/adres" } }
+  },
+  "definitions": {
+    "adres": {
+      "type": "object",
+      "required": ["postcode", "huisnummer", "nummeraanduidingIdentificatie"],
+      "additionalProperties": false,
+      "properties": {
+        "label": { "type": "string" },
+        "postcode": { "type": "string", "pattern": "^[1-9][0-9]{3}[A-Z]{2}$" },
+        "huisnummer": { "type": "integer", "minimum": 1 },
+        "huisletter": { "type": "string", "minLength": 1 },
+        "huisnummertoevoeging": { "type": "string", "minLength": 1 },
+        "nummeraanduidingIdentificatie": { "type": "string", "pattern": "^[0-9]{16}$" },
+        "ledigingen": { "type": "array", "items": { "$ref": "#/definitions/lediging" } },
+        "stortingen": { "type": "array", "items": { "$ref": "#/definitions/storting" } }
+      }
+    },
+    "lediging": {
+      "type": "object",
+      "required": ["datumTijd", "fractieCode"],
+      "additionalProperties": false,
+      "properties": {
+        "datumTijd": { "type": "string", "format": "date-time" },
+        "fractieCode": { "type": "string" },
+        "fractieOmschrijving": { "type": "string" },
+        "gewichtInKg": { "type": "number" }
+      }
+    },
+    "storting": {
+      "type": "object",
+      "required": ["datumTijd", "fractieCode"],
+      "additionalProperties": false,
+      "properties": {
+        "datumTijd": { "type": "string", "format": "date-time" },
+        "fractieCode": { "type": "string" },
+        "fractieOmschrijving": { "type": "string" },
+        "volumeInLiters": { "type": "integer" },
+        "VerzamelcontainerTitel": { "type": "string" },
+        "VerzamelcontainerId": { "type": "string" }
+      }
+    }
+  }
+}

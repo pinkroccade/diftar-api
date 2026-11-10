@@ -1,0 +1,131 @@
+{
+  "$schema": "./dataset.schema.json",
+  "adressen": [
+    {
+      "label": "veel-ledigingen",
+      "postcode": "1234AB",
+      "huisnummer": 12,
+      "nummeraanduidingIdentificatie": "0518200000123456",
+      "ledigingen": [
+        { "datumTijd":"2026-01-05T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":12 },
+        { "datumTijd":"2026-01-12T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":13 },
+        { "datumTijd":"2026-01-19T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":14 },
+        { "datumTijd":"2026-01-26T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":15 },
+        { "datumTijd":"2026-02-02T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":12 },
+        { "datumTijd":"2026-02-09T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":13 },
+        { "datumTijd":"2026-02-16T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":14 },
+        { "datumTijd":"2026-02-23T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":15 },
+        { "datumTijd":"2026-03-02T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":12 },
+        { "datumTijd":"2026-03-09T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":13 },
+        { "datumTijd":"2026-03-16T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":14 },
+        { "datumTijd":"2026-03-23T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":15 },
+        { "datumTijd":"2026-03-30T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":12 },
+        { "datumTijd":"2026-04-06T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":13 },
+        { "datumTijd":"2026-04-13T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":14 },
+        { "datumTijd":"2026-04-20T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":15 },
+        { "datumTijd":"2026-04-27T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":12 },
+        { "datumTijd":"2026-05-04T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":13 },
+        { "datumTijd":"2026-05-11T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":14 },
+        { "datumTijd":"2026-05-18T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":15 },
+        { "datumTijd":"2026-05-25T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":12 },
+        { "datumTijd":"2026-06-01T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":13 },
+        { "datumTijd":"2026-06-08T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":14 },
+        { "datumTijd":"2026-06-15T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":15 },
+        { "datumTijd":"2026-06-22T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":12 },
+        { "datumTijd":"2026-06-29T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":13 },
+        { "datumTijd":"2026-07-06T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":14 },
+        { "datumTijd":"2026-07-13T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":15 },
+        { "datumTijd":"2026-07-20T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":12 },
+        { "datumTijd":"2026-07-27T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":13 },
+        { "datumTijd":"2026-08-03T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":14 },
+        { "datumTijd":"2026-08-10T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":15 },
+        { "datumTijd":"2026-08-17T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":12 },
+        { "datumTijd":"2026-08-24T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":13 },
+        { "datumTijd":"2026-08-31T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":14 },
+        { "datumTijd":"2026-09-07T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":15 },
+        { "datumTijd":"2026-09-14T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":12 },
+        { "datumTijd":"2026-09-21T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":13 },
+        { "datumTijd":"2026-09-28T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":14 },
+        { "datumTijd":"2026-10-05T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":15 },
+        { "datumTijd":"2026-10-12T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":12 },
+        { "datumTijd":"2026-10-19T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":13 },
+        { "datumTijd":"2026-10-26T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":14 },
+        { "datumTijd":"2026-11-02T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":15 },
+        { "datumTijd":"2026-11-09T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":12 },
+        { "datumTijd":"2026-11-16T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":13 },
+        { "datumTijd":"2026-11-23T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":14 },
+        { "datumTijd":"2026-11-30T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":15 },
+        { "datumTijd":"2026-12-07T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":12 },
+        { "datumTijd":"2026-12-14T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":13 },
+        { "datumTijd":"2026-12-21T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":14 },
+        { "datumTijd":"2026-12-28T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":15 },
+        { "datumTijd":"2027-01-04T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":12 },
+        { "datumTijd":"2027-01-11T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":13 },
+        { "datumTijd":"2027-01-18T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":14 },
+        { "datumTijd":"2027-01-25T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":15 },
+        { "datumTijd":"2027-02-01T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":12 },
+        { "datumTijd":"2027-02-08T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":13 },
+        { "datumTijd":"2027-02-15T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":14 },
+        { "datumTijd":"2027-02-22T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":15 }
+      ],
+      "stortingen": [
+        { "datumTijd":"2026-01-05T14:30:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "volumeInLiters":30, "VerzamelcontainerId":"CC-00123", "VerzamelcontainerTitel":"Ondergrondse container Marktstraat" },
+        { "datumTijd":"2026-01-08T14:30:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "volumeInLiters":30, "VerzamelcontainerId":"CC-00123", "VerzamelcontainerTitel":"Ondergrondse container Marktstraat" },
+        { "datumTijd":"2026-01-11T14:30:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "volumeInLiters":30, "VerzamelcontainerId":"CC-00123", "VerzamelcontainerTitel":"Ondergrondse container Marktstraat" }
+      ]
+    },
+    {
+      "label": "bekend-maar-leeg",
+      "postcode": "1234AB",
+      "huisnummer": 14,
+      "nummeraanduidingIdentificatie": "0518200000123457",
+      "ledigingen": [],
+      "stortingen": []
+    },
+    {
+      "label": "alleen-stortingen",
+      "postcode": "1234AB",
+      "huisnummer": 16,
+      "nummeraanduidingIdentificatie": "0518200000123458",
+      "ledigingen": [],
+      "stortingen": [
+        { "datumTijd":"2026-01-05T14:30:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "volumeInLiters":30, "VerzamelcontainerId":"CC-00123", "VerzamelcontainerTitel":"Ondergrondse container Marktstraat" },
+        { "datumTijd":"2026-01-08T14:30:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "volumeInLiters":30, "VerzamelcontainerId":"CC-00123", "VerzamelcontainerTitel":"Ondergrondse container Marktstraat" },
+        { "datumTijd":"2026-01-11T14:30:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "volumeInLiters":30, "VerzamelcontainerId":"CC-00123", "VerzamelcontainerTitel":"Ondergrondse container Marktstraat" },
+        { "datumTijd":"2026-01-14T14:30:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "volumeInLiters":30, "VerzamelcontainerId":"CC-00123", "VerzamelcontainerTitel":"Ondergrondse container Marktstraat" },
+        { "datumTijd":"2026-01-17T14:30:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "volumeInLiters":30, "VerzamelcontainerId":"CC-00123", "VerzamelcontainerTitel":"Ondergrondse container Marktstraat" },
+        { "datumTijd":"2026-01-20T14:30:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "volumeInLiters":30, "VerzamelcontainerId":"CC-00123", "VerzamelcontainerTitel":"Ondergrondse container Marktstraat" },
+        { "datumTijd":"2026-01-23T14:30:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "volumeInLiters":30, "VerzamelcontainerId":"CC-00123", "VerzamelcontainerTitel":"Ondergrondse container Marktstraat" },
+        { "datumTijd":"2026-01-26T14:30:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "volumeInLiters":30, "VerzamelcontainerId":"CC-00123", "VerzamelcontainerTitel":"Ondergrondse container Marktstraat" }
+      ]
+    },
+    {
+      "label": "huisletter-en-toevoeging",
+      "postcode": "1234AB",
+      "huisnummer": 18,
+      "huisletter": "A",
+      "huisnummertoevoeging": "bis",
+      "nummeraanduidingIdentificatie": "0518200000123459",
+      "ledigingen": [
+        { "datumTijd":"2026-01-05T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":9 },
+        { "datumTijd":"2026-01-12T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":10 },
+        { "datumTijd":"2026-01-19T08:00:00+01:00", "fractieCode":"PMD", "fractieOmschrijving":"Plastic, metaal en drankenkartons", "gewichtInKg":11 },
+        { "datumTijd":"2026-01-26T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":12 }
+      ],
+      "stortingen": []
+    },
+    {
+      "label": "periodegrenzen",
+      "postcode": "5678CD",
+      "huisnummer": 1,
+      "nummeraanduidingIdentificatie": "0518200000123460",
+      "ledigingen": [
+        { "datumTijd":"2026-03-31T23:59:59+02:00", "fractieCode":"RST", "gewichtInKg":10 },
+        { "datumTijd":"2026-04-01T00:00:00+02:00", "fractieCode":"RST", "gewichtInKg":11 },
+        { "datumTijd":"2026-04-30T23:59:59+02:00", "fractieCode":"RST", "gewichtInKg":12 },
+        { "datumTijd":"2026-05-01T00:00:00+02:00", "fractieCode":"RST", "gewichtInKg":13 }
+      ],
+      "stortingen": []
+    }
+  ]
+}

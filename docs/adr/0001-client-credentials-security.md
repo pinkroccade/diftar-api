@@ -11,7 +11,7 @@ In dit specifieke geval kent NewWaste (de Diftar-backend) echter geen burgers: h
 ## Beslissing
 - De Diftar Ledigingen API gebruikt **OAuth2 Client Credentials** (NL GOV Assurance profile for OAuth 2.0, profiel "Direct Access Client") in plaats van een statische API-key.
 - NL-Portal is de vertrouwde client; autorisatie "deze burger mag alleen zijn eigen adres zien" wordt **bij NL-Portal** afgedwongen (vóór de aanroep, op basis van de Haal Centraal-uitkomst), niet bij NewWaste.
-- NewWaste ontvangt en valideert alleen een geldig access token met de juiste scope (bijv. `diftar.ledigingen.lezen`) en een adres/BAG-ID als queryparameter — geen BSN.
+- NewWaste ontvangt en valideert alleen een geldig access token met de juiste scope (bijv. `diftar.ledigingen.lezen`) en een adres/BAG-verblijfsobject-id als queryparameter — geen BSN.
 - Cross-org PKIoverheid/OIN + mTLS wordt (vooralsnog) niet verplicht gesteld, gezien de besloten netwerkverbinding; TLS blijft uiteraard verplicht.
 
 ## Consequenties

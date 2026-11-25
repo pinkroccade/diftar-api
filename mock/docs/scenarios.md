@@ -8,14 +8,14 @@ In alle voorbeelden is `V` de periode:
 V="vanaf=2026-01-01&totEnMet=2026-12-31"
 ```
 
-| Scenario | Adres | BAG-nummeraanduiding |
+| Scenario | Adres | BAG-verblijfsobject |
 |---|---|---|
-| [veel-ledigingen](#veel-ledigingen-paginering) | 1234AB 12 | 0518200000123456 |
-| [bekend-maar-leeg](#bekend-maar-leeg) | 1234AB 14 | 0518200000123457 |
-| [alleen-stortingen](#alleen-stortingen) | 1234AB 16 | 0518200000123458 |
-| [huisletter-en-toevoeging](#huisletter-en-toevoeging) | 1234AB 18 A bis | 0518200000123459 |
-| [periodegrenzen](#periodegrenzen) | 5678CD 1 | 0518200000123460 |
-| [onbekend adres](#onbekend-adres) | elk ander adres | elke andere BAG-id |
+| [veel-ledigingen](#veel-ledigingen-paginering) | 1234AB 12 | 0518010000123456 |
+| [bekend-maar-leeg](#bekend-maar-leeg) | 1234AB 14 | 0518010000123457 |
+| [alleen-stortingen](#alleen-stortingen) | 1234AB 16 | 0518010000123458 |
+| [huisletter-en-toevoeging](#huisletter-en-toevoeging) | 1234AB 18 A bis | 0518010000123459 |
+| [periodegrenzen](#periodegrenzen) | 5678CD 1 | 0518010000123460 |
+| [onbekend adres](#onbekend-adres) | elk ander adres | elke andere BAG-verblijfsobject-id |
 | [ongeldige aanvraag](#ongeldige-aanvraag) | | |
 
 ## veel-ledigingen (paginering)
@@ -26,10 +26,10 @@ V="vanaf=2026-01-01&totEnMet=2026-12-31"
 curl "localhost:1080/v1/ledigingen?postcode=1234AB&huisnummer=12&$V&pageSize=2&page=2"
 ```
 
-Antwoord: `200`, `totaalAantalLedigingen` is `52` (60 wekelijkse ledigingen vanaf 5 januari 2026, waarvan 52 in 2026), `ledigingen` bevat 2 items en `_links` bevat `self`, `first`, `last`, `next` en `prev` (op de laatste pagina geen `next`, op de eerste geen `prev`). Zonder `pageSize` is dat 50 per pagina (de standaard uit de spec). Hetzelfde adres via BAG-nummeraanduiding geeft hetzelfde resultaat:
+Antwoord: `200`, `totaalAantalLedigingen` is `52` (60 wekelijkse ledigingen vanaf 5 januari 2026, waarvan 52 in 2026), `ledigingen` bevat 2 items en `_links` bevat `self`, `first`, `last`, `next` en `prev` (op de laatste pagina geen `next`, op de eerste geen `prev`). Zonder `pageSize` is dat 50 per pagina (de standaard uit de spec). Hetzelfde adres via BAG-verblijfsobject geeft hetzelfde resultaat:
 
 ```bash
-curl "localhost:1080/v1/ledigingen?nummeraanduidingIdentificatie=0518200000123456&$V"
+curl "localhost:1080/v1/ledigingen?verblijfsobjectIdentificatie=0518010000123456&$V"
 ```
 
 **Verwacht clientgedrag:** de client blijft pagina's ophalen tot `next` ontbreekt en toont alle 52 ledigingen, niet alleen de eerste pagina.
@@ -96,7 +96,7 @@ Antwoord: `404` met `Content-Type: application/problem+json` en een `detail` die
 {"type":"https://diftar-api.example/problemen/adres-niet-gevonden","title":"Adres niet gevonden","status":404,"detail":"Het adres 9999ZZ 1 staat niet in de dataset van de mock."}
 ```
 
-Hetzelfde geldt voor een onbekende BAG-nummeraanduiding. "Bekend" betekent: aanwezig in de [dataset](configuratie.md#dataset).
+Hetzelfde geldt voor een onbekend BAG-verblijfsobject. "Bekend" betekent: aanwezig in de [dataset](configuratie.md#dataset).
 
 **Verwacht clientgedrag:** de client onderscheidt `404` (onbekend adres) van `200` met een lege lijst (bekend adres, geen data).
 
@@ -111,6 +111,6 @@ curl -i "localhost:1080/v1/ledigingen?postcode=1234AB&huisnummer=12"        # pe
 
 Antwoord: `400` met `application/problem+json` en een algemene `detail` ("Ongeldige of ontbrekende parameters of headers; zie de OpenAPI-specificatie."). De mock zegt niet welke parameter fout is.
 
-Let op: de mock controleert niet of je tegelijk een adres én een BAG-nummeraanduiding meestuurt, of geen van beide; dat geeft gewoon een antwoord. Zie [bekende afwijkingen](../README.md#bekende-afwijkingen-van-het-contract).
+Let op: de mock controleert niet of je tegelijk een adres én een BAG-verblijfsobject meestuurt, of geen van beide; dat geeft gewoon een antwoord. Zie [bekende afwijkingen](../README.md#bekende-afwijkingen-van-het-contract).
 
 **Verwacht clientgedrag:** de client toont een foutmelding en probeert dezelfde aanvraag niet opnieuw.

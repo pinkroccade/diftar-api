@@ -27,7 +27,7 @@ function leesDataset() {
   }
   const gezien = new Set();
   data.adressen.forEach((a, i) => {
-    const sleutels = [`adres ${a.postcode} ${a.huisnummer}${a.huisletter ?? ''}-${a.huisnummertoevoeging ?? ''}`, `BAG-id ${a.nummeraanduidingIdentificatie}`];
+    const sleutels = [`adres ${a.postcode} ${a.huisnummer}${a.huisletter ?? ''}-${a.huisnummertoevoeging ?? ''}`, `BAG-verblijfsobject-id ${a.verblijfsobjectIdentificatie}`];
     for (const sleutel of sleutels) {
       if (gezien.has(sleutel)) throw new Error(`${datasetPad}: dubbel adres op /adressen/${i} (${sleutel})`);
       gezien.add(sleutel);
@@ -45,7 +45,7 @@ const probleem = (status, slug, title, detail) => ({
 function genereer() {
   const dataset = leesDataset();
   const lib = readFileSync(`${tpl}/lib.js`, 'utf8')
-    .replace("var API_VERSION = '1.1.0';", `var API_VERSION = '${apiVersion}';`)
+    .replace("var API_VERSION = '1.2.0';", `var API_VERSION = '${apiVersion}';`)
     .replace('__DATASET__', () => JSON.stringify(dataset.adressen));
   const operatie = (id, specPad, operationId, bestand) => ({
     id,

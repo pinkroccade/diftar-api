@@ -20,7 +20,10 @@ controleer() { # naam, verwachte status, verwacht inhoudstype, pad
 }
 
 controleer "ledigingen, veel (paginering)" 200 application/json "/v1/ledigingen?postcode=1234AB&huisnummer=12&$V&pageSize=20&page=2"
-controleer "ledigingen via BAG-id" 200 application/json "/v1/ledigingen?nummeraanduidingIdentificatie=0518200000123456&$V"
+controleer "ledigingen via BAG-verblijfsobject-id" 200 application/json "/v1/ledigingen?verblijfsobjectIdentificatie=0518010000123456&$V"
+controleer "stortingen via BAG-verblijfsobject-id" 200 application/json "/v1/stortingen?verblijfsobjectIdentificatie=0518010000123456&$V"
+controleer "onbekend verblijfsobject" 404 application/problem+json "/v1/ledigingen?verblijfsobjectIdentificatie=0518019999999999&$V"
+controleer "ongeldig verblijfsobject-id" 400 application/problem+json "/v1/ledigingen?verblijfsobjectIdentificatie=123&$V"
 controleer "ledigingen, bekend maar leeg" 200 application/json "/v1/ledigingen?postcode=1234AB&huisnummer=14&$V"
 controleer "stortingen" 200 application/json "/v1/stortingen?postcode=1234AB&huisnummer=16&$V"
 controleer "huisletter en toevoeging" 200 application/json "/v1/ledigingen?postcode=1234AB&huisnummer=18&huisletter=A&huisnummertoevoeging=bis&$V"

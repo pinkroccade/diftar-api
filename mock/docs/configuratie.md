@@ -57,7 +57,7 @@ De dataset is `mock/dataset/dataset.json`; het schema is `mock/dataset/dataset.s
       "huisnummer": 20,
       "huisletter": "B",
       "huisnummertoevoeging": "2",
-      "nummeraanduidingIdentificatie": "0518200000000020",
+      "verblijfsobjectIdentificatie": "0518010000000020",
       "ledigingen": [
         { "datumTijd": "2026-02-02T08:00:00+01:00", "fractieCode": "GFT", "fractieOmschrijving": "GFT-afval", "gewichtInKg": 12.5 }
       ],
@@ -74,16 +74,16 @@ De dataset is `mock/dataset/dataset.json`; het schema is `mock/dataset/dataset.s
 | `postcode` | ja | `1234AB`, zonder spatie, hoofdletters |
 | `huisnummer` | ja | geheel getal, minimaal 1 |
 | `huisletter`, `huisnummertoevoeging` | nee | een zoekopdracht moet ze exact meesturen, of juist niet |
-| `nummeraanduidingIdentificatie` | ja | 16 cijfers, uniek in de dataset |
+| `verblijfsobjectIdentificatie` | ja | 16 cijfers, uniek in de dataset |
 | `label` | nee | naam van het scenario; geen API-veld |
 | `ledigingen`, `stortingen` | nee | lege of ontbrekende lijst geeft `200` met een lege lijst |
 | `datumTijd` | ja | RFC 3339, bijvoorbeeld `2026-02-02T08:00:00+01:00` |
 | `fractieCode` | ja | vrije tekst |
 
 Spelregels:
-- "Bekend" betekent: het adres of de BAG-nummeraanduiding staat in de dataset. Alles anders geeft `404`.
+- "Bekend" betekent: het adres of het BAG-verblijfsobject staat in de dataset. Alles anders geeft `404`.
 - De periode `vanaf`/`totEnMet` is inclusief en telt op datum (het datumdeel van `datumTijd`).
-- Een adres kan niet twee keer voorkomen, ook niet via dezelfde BAG-id.
+- Een adres kan niet twee keer voorkomen, ook niet via hetzelfde BAG-verblijfsobject-id.
 
 ### Dataset aanpassen terwijl de mock draait
 

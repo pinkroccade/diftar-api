@@ -14,7 +14,7 @@ info:
     "deze burger mag alleen zijn eigen adres zien" wordt bij de aanroepende
     portal-backend afgedwongen, niet hier. Zie `docs/adr/0001-client-credentials-security.md`
     voor de onderbouwing van deze keuze.
-  version: "1.1.0"
+  version: "1.2.0"
   contact:
     name: Beheerder Diftar Ledigingen API
     email: TODO-beheerder@example.nl
@@ -74,20 +74,21 @@ paths:
 
   /ledigingen:
     get:
-      summary: Vraag ledigingen op voor een adres of BAG-nummeraanduiding, binnen een periode
+      summary: Vraag ledigingen op voor een adres of BAG-verblijfsobject, binnen een periode
       description: |
         Geeft de ledigingen (minicontainer-legingen) terug voor een adres of
-        BAG-nummeraanduiding, binnen de opgegeven periode.
+        BAG-verblijfsobject, binnen de opgegeven periode.
 
         Geef **of** de adresvelden (`postcode` + `huisnummer`, optioneel aangevuld
-        met `huisletter`/`huisnummertoevoeging`), **of** `nummeraanduidingIdentificatie`
+        met `huisletter`/`huisnummertoevoeging`), **of** `verblijfsobjectIdentificatie`
         op - niet beide, en niet geen van beide. Bij een ongeldige combinatie
         wordt een `400 Bad Request` met Problem Details teruggegeven.
 
-        Een bekend adres of bekende BAG-nummeraanduiding zonder ledigingen in de
+        Een bekend adres of bekend BAG-verblijfsobject zonder ledigingen in de
         periode is een geldige vraag met een geldig antwoord: `200` met een lege
-        lijst. Een adres of BAG-nummeraanduiding dat niet gevonden wordt geeft
-        `404 Not Found` met Problem Details en een duidelijke `detail`.
+        lijst. Een adres of BAG-verblijfsobject dat niet gevonden wordt geeft
+        `404 Not Found` met Problem Details en een duidelijke `detail`. Een
+        verblijfsobject dat voor deze API niet zichtbaar is geeft hetzelfde `404`.
       operationId: getLedigingen
       tags:
         - Ledigingen
@@ -99,14 +100,14 @@ paths:
         - $ref: "#/components/parameters/huisnummer"
         - $ref: "#/components/parameters/huisletter"
         - $ref: "#/components/parameters/huisnummertoevoeging"
-        - $ref: "#/components/parameters/nummeraanduidingIdentificatie"
+        - $ref: "#/components/parameters/verblijfsobjectIdentificatie"
         - $ref: "#/components/parameters/vanaf"
         - $ref: "#/components/parameters/totEnMet"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/pageSize"
       responses:
         "200":
-          description: Lijst van ledigingen voor het opgegeven adres/BAG-ID en de opgegeven periode
+          description: Lijst van ledigingen voor het opgegeven adres/BAG-verblijfsobject-id en de opgegeven periode
           headers:
             API-Version:
               $ref: "#/components/headers/ApiVersie"
@@ -125,21 +126,22 @@ paths:
 
   /stortingen:
     get:
-      summary: Vraag stortingen op voor een adres of BAG-nummeraanduiding, binnen een periode
+      summary: Vraag stortingen op voor een adres of BAG-verblijfsobject, binnen een periode
       description: |
         Geeft de stortingen in verzamelcontainers terug voor een adres of
-        BAG-nummeraanduiding, binnen de opgegeven periode. Alleen transacties
+        BAG-verblijfsobject, binnen de opgegeven periode. Alleen transacties
         van type 101, gekoppeld via de pas van het adres.
 
         Geef **of** de adresvelden (`postcode` + `huisnummer`, optioneel aangevuld
-        met `huisletter`/`huisnummertoevoeging`), **of** `nummeraanduidingIdentificatie`
+        met `huisletter`/`huisnummertoevoeging`), **of** `verblijfsobjectIdentificatie`
         op - niet beide, en niet geen van beide. Bij een ongeldige combinatie
         wordt een `400 Bad Request` met Problem Details teruggegeven.
 
-        Een bekend adres of bekende BAG-nummeraanduiding zonder stortingen in de
+        Een bekend adres of bekend BAG-verblijfsobject zonder stortingen in de
         periode is een geldige vraag met een geldig antwoord: `200` met een lege
-        lijst. Een adres of BAG-nummeraanduiding dat niet gevonden wordt geeft
-        `404 Not Found` met Problem Details en een duidelijke `detail`.
+        lijst. Een adres of BAG-verblijfsobject dat niet gevonden wordt geeft
+        `404 Not Found` met Problem Details en een duidelijke `detail`. Een
+        verblijfsobject dat voor deze API niet zichtbaar is geeft hetzelfde `404`.
       operationId: getStortingen
       tags:
         - Stortingen
@@ -151,14 +153,14 @@ paths:
         - $ref: "#/components/parameters/huisnummer"
         - $ref: "#/components/parameters/huisletter"
         - $ref: "#/components/parameters/huisnummertoevoeging"
-        - $ref: "#/components/parameters/nummeraanduidingIdentificatie"
+        - $ref: "#/components/parameters/verblijfsobjectIdentificatie"
         - $ref: "#/components/parameters/vanaf"
         - $ref: "#/components/parameters/totEnMet"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/pageSize"
       responses:
         "200":
-          description: Lijst van stortingen voor het opgegeven adres/BAG-ID en de opgegeven periode
+          description: Lijst van stortingen voor het opgegeven adres/BAG-verblijfsobject-id en de opgegeven periode
           headers:
             API-Version:
               $ref: "#/components/headers/ApiVersie"
@@ -183,7 +185,7 @@ components:
       required: false
       description: |
         Nederlandse postcode (BAG-notatie, zonder spatie, hoofdletters), bijv. "1234AB".
-        Verplicht in combinatie met `huisnummer` als alternatief voor `nummeraanduidingIdentificatie`.
+        Verplicht in combinatie met `huisnummer` als alternatief voor `verblijfsobjectIdentificatie`.
       schema:
         type: string
         pattern: "^[1-9][0-9]{3}[A-Z]{2}$"
@@ -193,7 +195,7 @@ components:
       name: huisnummer
       in: query
       required: false
-      description: Huisnummer. Verplicht in combinatie met `postcode` als alternatief voor `nummeraanduidingIdentificatie`.
+      description: Huisnummer. Verplicht in combinatie met `postcode` als alternatief voor `verblijfsobjectIdentificatie`.
       schema:
         type: integer
         minimum: 1
@@ -217,17 +219,19 @@ components:
         type: string
       example: "bis"
 
-    nummeraanduidingIdentificatie:
-      name: nummeraanduidingIdentificatie
+    verblijfsobjectIdentificatie:
+      name: verblijfsobjectIdentificatie
       in: query
       required: false
       description: |
-        BAG-identificatie van de nummeraanduiding (16 cijfers). Alternatief voor
-        de combinatie `postcode`/`huisnummer`/`huisletter`/`huisnummertoevoeging`.
+        BAG-identificatie van het verblijfsobject (16 cijfers), opgebouwd uit
+        gemeentecode (4 cijfers), objecttypecode (2 cijfers) en objectvolgnummer
+        (10 cijfers). Alternatief voor de combinatie
+        `postcode`/`huisnummer`/`huisletter`/`huisnummertoevoeging`.
       schema:
         type: string
-        pattern: "^[0-9]{16}$"
-      example: "0518200000123456"
+        pattern: "^[0-9]{4}[0-9]{2}[0-9]{10}$"
+      example: "0518010000123456"
 
     vanaf:
       name: vanaf
@@ -422,7 +426,7 @@ components:
         detail:
           type: string
           description: Mensleesbare toelichting specifiek voor dit voorkomen van het probleem.
-          example: "Geef óf postcode en huisnummer, óf nummeraanduidingIdentificatie op, niet beide."
+          example: "Geef óf postcode en huisnummer, óf verblijfsobjectIdentificatie op, niet beide."
         instance:
           type: string
           format: uri
@@ -435,7 +439,7 @@ components:
             properties:
               naam:
                 type: string
-                example: "nummeraanduidingIdentificatie"
+                example: "verblijfsobjectIdentificatie"
               reden:
                 type: string
                 example: "Mag niet gecombineerd worden met postcode/huisnummer."
@@ -483,7 +487,7 @@ components:
             $ref: "#/components/schemas/Probleem"
 
     AdresNietGevonden:
-      description: Het opgevraagde adres of de opgevraagde BAG-nummeraanduiding is niet gevonden
+      description: Het opgevraagde adres of het opgevraagde BAG-verblijfsobject is niet gevonden
       content:
         application/problem+json:
           schema:

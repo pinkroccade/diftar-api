@@ -35,13 +35,13 @@ Zonder compose: `docker run -p 1080:1080 ghcr.io/pinkroccade/diftar-api/mock:lat
 
 Een kleine vaste set adressen om de belangrijkste situaties van je client te testen. Per scenario staan het doel, een curl-voorbeeld en het verwachte clientgedrag in [Scenario's](docs/scenarios.md).
 
-| Label | Adres | BAG-nummeraanduiding | Gedrag |
+| Label | Adres | BAG-verblijfsobject | Gedrag |
 |---|---|---|---|
-| `veel-ledigingen` | 1234AB 12 | 0518200000123456 | 60 wekelijkse ledigingen vanaf 5 jan 2026 (52 in 2026), 3 stortingen: paginering. |
-| `bekend-maar-leeg` | 1234AB 14 | 0518200000123457 | Bekend, geen data: `200` met lege lijst. |
-| `alleen-stortingen` | 1234AB 16 | 0518200000123458 | Geen ledigingen, 8 stortingen. |
-| `huisletter-en-toevoeging` | 1234AB 18 A bis | 0518200000123459 | 4 ledigingen; zonder huisletter en toevoeging is het adres onbekend. |
-| `periodegrenzen` | 5678CD 1 | 0518200000123460 | Ledigingen op 31 mrt, 1 apr, 30 apr en 1 mei 2026: `vanaf` en `totEnMet` zijn inclusief. |
+| `veel-ledigingen` | 1234AB 12 | 0518010000123456 | 60 wekelijkse ledigingen vanaf 5 jan 2026 (52 in 2026), 3 stortingen: paginering. |
+| `bekend-maar-leeg` | 1234AB 14 | 0518010000123457 | Bekend, geen data: `200` met lege lijst. |
+| `alleen-stortingen` | 1234AB 16 | 0518010000123458 | Geen ledigingen, 8 stortingen. |
+| `huisletter-en-toevoeging` | 1234AB 18 A bis | 0518010000123459 | 4 ledigingen; zonder huisletter en toevoeging is het adres onbekend. |
+| `periodegrenzen` | 5678CD 1 | 0518010000123460 | Ledigingen op 31 mrt, 1 apr, 30 apr en 1 mei 2026: `vanaf` en `totEnMet` zijn inclusief. |
 | (onbekend) | elk ander adres | | `404` problem+json met het adres in `detail`. |
 
 Het `label` is een naam voor het scenario in de dataset, geen API-veld.
@@ -95,7 +95,7 @@ Let op:
 ## Bekende afwijkingen van het contract
 
 - Geen tokencontrole: de mock controleert alleen of er een `Authorization`-header is. Geen `401` bij een ongeldig of verlopen token en geen `403` bij een ontbrekende scope; een token van Keycloak en het woord `onzin` geven hetzelfde antwoord.
-- Geen aparte combinatievalidatie: "adres óf BAG-nummeraanduiding, niet beide en niet geen" wordt niet afgedwongen.
+- Geen aparte combinatievalidatie: "adres óf BAG-verblijfsobject, niet beide en niet geen" wordt niet afgedwongen.
 - Elke ongeldige aanvraag geeft een `400` met een generieke `detail`.
 - Hot-reload geldt alleen voor de dataset, niet voor de templates; die zijn in het image ingebakken.
 
@@ -109,8 +109,8 @@ docker run -p 1080:1080 ghcr.io/pinkroccade/diftar-api/mock:latest
 
 | Tag | Betekenis |
 |---|---|
-| `1.1.0` | volledige API-versie uit de spec (schuift mee bij een nieuwe mockbouw voor dezelfde API-versie) |
-| `1.1` | major.minor van de API-versie |
+| `1.2.0` | volledige API-versie uit de spec (schuift mee bij een nieuwe mockbouw voor dezelfde API-versie) |
+| `1.2` | major.minor van de API-versie |
 | `latest` | laatste bouw van `main` |
 | `sha-<commit>` | onveranderlijk; gebruik deze om een exacte bouw vast te zetten |
 

@@ -1,5 +1,5 @@
 var BASE = '/v1';
-var API_VERSION = '1.1.0';
+var API_VERSION = '1.2.0';
 var q = request.queryStringParameters || {};
 function p(n, d) { return q[n] ? q[n][0] : d; }
 function problem(status, slug, title, detail) {
@@ -9,10 +9,10 @@ function problem(status, slug, title, detail) {
 // Dataset: wordt bij het genereren ingevuld vanuit mock/dataset/dataset.json.
 var ADRESSEN = __DATASET__;
 function vind() {
-  var bag = p('nummeraanduidingIdentificatie', null);
+  var vo = p('verblijfsobjectIdentificatie', null);
   for (var i = 0; i < ADRESSEN.length; i++) {
     var a = ADRESSEN[i];
-    if (bag ? a.nummeraanduidingIdentificatie === bag
+    if (vo ? a.verblijfsobjectIdentificatie === vo
             : a.postcode === p('postcode', '') && String(a.huisnummer) === p('huisnummer', '') &&
               (a.huisletter || '') === p('huisletter', '') && (a.huisnummertoevoeging || '') === p('huisnummertoevoeging', '')) {
       return { ledigingen: a.ledigingen || [], stortingen: a.stortingen || [] };
@@ -23,8 +23,8 @@ function vind() {
 function pagina(naam, totaalNaam) {
   var adres = vind();
   if (!adres) {
-    var wie = p('nummeraanduidingIdentificatie', null)
-      ? 'BAG-nummeraanduiding ' + p('nummeraanduidingIdentificatie', '')
+    var wie = p('verblijfsobjectIdentificatie', null)
+      ? 'BAG-verblijfsobject ' + p('verblijfsobjectIdentificatie', '')
       : 'adres ' + p('postcode', '') + ' ' + p('huisnummer', '') + p('huisletter', '') + (p('huisnummertoevoeging', '') ? '-' + p('huisnummertoevoeging', '') : '');
     return problem(404, 'adres-niet-gevonden', 'Adres niet gevonden', 'Het ' + wie + ' staat niet in de dataset van de mock.');
   }

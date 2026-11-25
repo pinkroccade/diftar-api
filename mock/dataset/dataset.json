@@ -5,7 +5,7 @@
       "label": "veel-ledigingen",
       "postcode": "1234AB",
       "huisnummer": 12,
-      "nummeraanduidingIdentificatie": "0518200000123456",
+      "verblijfsobjectIdentificatie": "0518010000123456",
       "ledigingen": [
         { "datumTijd":"2026-01-05T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":12 },
         { "datumTijd":"2026-01-12T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":13 },
@@ -78,7 +78,7 @@
       "label": "bekend-maar-leeg",
       "postcode": "1234AB",
       "huisnummer": 14,
-      "nummeraanduidingIdentificatie": "0518200000123457",
+      "verblijfsobjectIdentificatie": "0518010000123457",
       "ledigingen": [],
       "stortingen": []
     },
@@ -86,7 +86,7 @@
       "label": "alleen-stortingen",
       "postcode": "1234AB",
       "huisnummer": 16,
-      "nummeraanduidingIdentificatie": "0518200000123458",
+      "verblijfsobjectIdentificatie": "0518010000123458",
       "ledigingen": [],
       "stortingen": [
         { "datumTijd":"2026-01-05T14:30:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "volumeInLiters":30, "VerzamelcontainerId":"CC-00123", "VerzamelcontainerTitel":"Ondergrondse container Marktstraat" },
@@ -105,7 +105,7 @@
       "huisnummer": 18,
       "huisletter": "A",
       "huisnummertoevoeging": "bis",
-      "nummeraanduidingIdentificatie": "0518200000123459",
+      "verblijfsobjectIdentificatie": "0518010000123459",
       "ledigingen": [
         { "datumTijd":"2026-01-05T08:00:00+01:00", "fractieCode":"GFT", "fractieOmschrijving":"GFT-afval", "gewichtInKg":9 },
         { "datumTijd":"2026-01-12T08:00:00+01:00", "fractieCode":"RST", "fractieOmschrijving":"Restafval", "gewichtInKg":10 },
@@ -118,7 +118,7 @@
       "label": "periodegrenzen",
       "postcode": "5678CD",
       "huisnummer": 1,
-      "nummeraanduidingIdentificatie": "0518200000123460",
+      "verblijfsobjectIdentificatie": "0518010000123460",
       "ledigingen": [
         { "datumTijd":"2026-03-31T23:59:59+02:00", "fractieCode":"RST", "gewichtInKg":10 },
         { "datumTijd":"2026-04-01T00:00:00+02:00", "fractieCode":"RST", "gewichtInKg":11 },
